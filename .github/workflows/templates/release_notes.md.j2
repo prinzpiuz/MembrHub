@@ -1,0 +1,20 @@
+## What's Changed in {{ version }}
+
+{% for commit_type, commits in release.elements | groupby("type") %}
+{% set type_headers = {
+    "feat": "✨ Features",
+    "fix": "🐛 Bug Fixes",
+    "perf": "⚡ Performance Improvements",
+    "refactor": "♻️ Code Refactoring",
+    "docs": "📚 Documentation"
+} %}
+{% if commit_type in type_headers %}
+### {{ type_headers[commit_type] }}
+
+{% for commit in commits %}
+- {{ commit.descriptions[0] }} ([`{{ commit.short_hash }}`]({{ commit.hexsha | commit_hash_url }}))
+{% endfor %}
+{% endif %}
+{% endfor %}
+
+**Full Changelog**: {{ release.compare_url }}
