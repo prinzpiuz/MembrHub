@@ -53,9 +53,9 @@ def format_address(
     lines = [line.strip() for line in formatted.split("\n") if line.strip()]
     cleaned_lines = []
     for line in lines:
-        line = line.strip(" ,.-")
-        if line:
-            cleaned_lines.append(line)
+        stripped_line = line.strip(" ,.-")
+        if stripped_line:
+            cleaned_lines.append(stripped_line)
 
     return "\n".join(cleaned_lines)
 

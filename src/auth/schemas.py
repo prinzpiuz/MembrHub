@@ -3,6 +3,9 @@ from pydantic import EmailStr, Field
 from src.core.schemas import BaseSchema
 
 
+TOKEN_TYPE_BEARER = "bearer"  # noqa: S105
+
+
 class RegisterRequest(BaseSchema):
     email: EmailStr
     password: str = Field(..., min_length=8, max_length=128)
@@ -18,12 +21,12 @@ class LoginRequest(BaseSchema):
 class TokenResponse(BaseSchema):
     access_token: str
     refresh_token: str
-    token_type: str = "bearer"
+    token_type: str = TOKEN_TYPE_BEARER
 
 
 class AccessTokenResponse(BaseSchema):
     access_token: str
-    token_type: str = "bearer"
+    token_type: str = TOKEN_TYPE_BEARER
 
 
 class RefreshTokenRequest(BaseSchema):

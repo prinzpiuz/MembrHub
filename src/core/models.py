@@ -1,6 +1,6 @@
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any
-from uuid import UUID
+from uuid import UUID, uuid7
 
 from sqlalchemy import DateTime, event, func
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
@@ -10,9 +10,7 @@ from src.core.database import metadata
 
 
 def generate_uuid7() -> UUID:
-    import uuid
-
-    return uuid.uuid7()
+    return uuid7()
 
 
 class Base(DeclarativeBase):
@@ -60,10 +58,10 @@ class SoftDeleteMixin:
         return self.deleted_at is not None
 
     def soft_delete(self) -> None:
-        self.deleted_at = datetime.now()
+        self.deleted_at = datetime.now(UTC)
 
 
 @event.listens_for(Base, "before_update", propagate=True)
-def receive_before_update(mapper: Any, connection: Any, target: Any) -> None:
+def receive_before_update(target: Any) -> None:
     if hasattr(target, "updated_at"):
-        target.updated_at = datetime.now()
+        target.updated_at = datetime.now(UTC)

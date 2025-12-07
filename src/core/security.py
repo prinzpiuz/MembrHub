@@ -1,3 +1,4 @@
+import hashlib
 import secrets
 from datetime import UTC, datetime, timedelta
 from typing import Any, cast
@@ -97,6 +98,4 @@ def generate_secure_token(length: int = 32) -> str:
 
 
 def hash_token(token: str) -> str:
-    import hashlib
-
     return hashlib.sha256(token.encode()).hexdigest()

@@ -218,7 +218,7 @@ class AuthService:
 
     async def request_email_verification(
         self,
-        db: AsyncSession,
+        _: AsyncSession,
         account: Account,
     ) -> str:
         token = create_token(

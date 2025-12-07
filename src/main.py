@@ -13,7 +13,7 @@ from src.membership.router import router as membership_router
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
+async def lifespan(_app: FastAPI) -> AsyncGenerator[None]:
     yield
 
 

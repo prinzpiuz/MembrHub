@@ -76,7 +76,7 @@ class Settings(BaseSettings):
     def async_database_url(self) -> URL:
         return make_url(str(self.DATABASE_URL))
 
-    @computed_field
+    @property
     def is_development(self) -> bool:
         return self.ENVIRONMENT in (Environment.LOCAL, Environment.TESTING)
 

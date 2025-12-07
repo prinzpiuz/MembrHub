@@ -1,13 +1,10 @@
 import math
-from typing import Annotated, Generic, TypeVar
+from typing import Annotated
 
 from fastapi import Query
 from pydantic import BaseModel
 from sqlalchemy import Select, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
-
-
-T = TypeVar("T")
 
 
 class PaginationParams(BaseModel):
@@ -33,7 +30,7 @@ def get_pagination_params(
 Pagination = Annotated[PaginationParams, get_pagination_params]
 
 
-class PaginatedResult(BaseModel, Generic[T]):
+class PaginatedResult[T](BaseModel):
     items: list[T]
     total: int
     page: int
@@ -43,7 +40,7 @@ class PaginatedResult(BaseModel, Generic[T]):
     model_config = {"arbitrary_types_allowed": True}
 
 
-async def paginate(
+async def paginate[T](
     db: AsyncSession,
     query: Select[tuple[T]],
     params: PaginationParams,
