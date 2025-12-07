@@ -1,33 +1,94 @@
-from typing import Any
+from typing import cast
 
-from fastapi import HTTPException, status
+from fastapi import FastAPI, Request, status
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
+from pydantic import ValidationError as PydanticValidationError
 
-
-class DetailedHTTPException(HTTPException):
-    STATUS_CODE = status.HTTP_500_INTERNAL_SERVER_ERROR
-    DETAIL = "Server error"
-
-    def __init__(self, **kwargs: dict[str, Any]) -> None:
-        super().__init__(status_code=self.STATUS_CODE, detail=self.DETAIL, **kwargs)
+from src.core.exceptions import AppException
+from src.core.schemas import ErrorDetail, ErrorResponse
 
 
-class PermissionDenied(DetailedHTTPException):
-    STATUS_CODE = status.HTTP_403_FORBIDDEN
-    DETAIL = "Permission denied"
+def configure_exception_handlers(app: FastAPI) -> None:
+    @app.exception_handler(AppException)
+    async def app_exception_handler(
+        _: Request,
+        exc: AppException,
+    ) -> JSONResponse:
+        return JSONResponse(
+            status_code=exc.status_code,
+            content=ErrorResponse(
+                code=exc.code,
+                message=exc.message,
+                details=[
+                    ErrorDetail(
+                        field=cast(str | None, d.get("field")),
+                        message=cast(str, d.get("message")),
+                    )
+                    for d in exc.details
+                ]
+                if exc.details
+                else None,
+            ).model_dump(),
+        )
 
+    @app.exception_handler(RequestValidationError)
+    async def validation_exception_handler(
+        _: Request,
+        exc: RequestValidationError,
+    ) -> JSONResponse:
+        details = []
+        for error in exc.errors():
+            field = ".".join(str(loc) for loc in error["loc"][1:])
+            details.append(
+                ErrorDetail(
+                    field=field or None,
+                    message=error["msg"],
+                )
+            )
 
-class NotFound(DetailedHTTPException):
-    STATUS_CODE = status.HTTP_404_NOT_FOUND
+        return JSONResponse(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            content=ErrorResponse(
+                code="VALIDATION_ERROR",
+                message="Request validation failed",
+                details=details,
+            ).model_dump(),
+        )
 
+    @app.exception_handler(PydanticValidationError)
+    async def pydantic_validation_exception_handler(
+        _: Request,
+        exc: PydanticValidationError,
+    ) -> JSONResponse:
+        details = []
+        for error in exc.errors():
+            field = ".".join(str(loc) for loc in error["loc"])
+            details.append(
+                ErrorDetail(
+                    field=field or None,
+                    message=error["msg"],
+                )
+            )
 
-class BadRequest(DetailedHTTPException):
-    STATUS_CODE = status.HTTP_400_BAD_REQUEST
-    DETAIL = "Bad Request"
+        return JSONResponse(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            content=ErrorResponse(
+                code="VALIDATION_ERROR",
+                message="Data validation failed",
+                details=details,
+            ).model_dump(),
+        )
 
-
-class NotAuthenticated(DetailedHTTPException):
-    STATUS_CODE = status.HTTP_401_UNAUTHORIZED
-    DETAIL = "User not authenticated"
-
-    def __init__(self) -> None:
-        super().__init__(headers={"WWW-Authenticate": "Bearer"})
+    @app.exception_handler(Exception)
+    async def general_exception_handler(
+        _: Request,
+        _exc: Exception,
+    ) -> JSONResponse:
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content=ErrorResponse(
+                code="INTERNAL_ERROR",
+                message="An unexpected error occurred",
+            ).model_dump(),
+        )

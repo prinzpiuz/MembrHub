@@ -1,12 +1,14 @@
 import multiprocessing
+from typing import Any
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-try:
-    from prometheus_client import multiprocess
 
-    def child_exit(_, worker):
+try:
+    from prometheus_client import multiprocess  # type: ignore
+
+    def child_exit(_: Any, worker: Any) -> None:
         multiprocess.mark_process_dead(worker.pid)
 
 except ImportError:
@@ -18,11 +20,11 @@ class Settings(BaseSettings):
         env_file=".env", env_file_encoding="utf-8", extra="ignore"
     )
 
-    host: str = "0.0.0.0"
+    host: str = "127.0.0.1"
     port: int = 8000
     bind: str | None = None
 
-    workers_per_core: int = Field(1)
+    workers_per_core: int = Field(default=1)
     max_workers: int | None = None
     web_concurrency: int | None = None
 
@@ -58,7 +60,7 @@ settings = Settings()
 loglevel = settings.log_level
 workers = settings.computed_web_concurrency
 bind = settings.computed_bind
-worker_tmp_dir = "/dev/shm"
+worker_tmp_dir = None
 graceful_timeout = settings.graceful_timeout
 timeout = settings.timeout
 keepalive = settings.keepalive
