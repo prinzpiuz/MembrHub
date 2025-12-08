@@ -37,6 +37,7 @@ asgi-lifespan = "^2.1.0"
 factory-boy = "^3.3.3"
 pip-audit = "^2.10.0"
 boto3-stubs = "^1.42.4"
+botocore-stubs = "^1.42.4"
 
 [build-system]
 requires = ["poetry-core"]
@@ -104,11 +105,19 @@ show_error_codes = true
 show_column_numbers = true
 pretty = true
 explicit_package_bases = true
+disallow_subclassing_any = false
 
 plugins = ["pydantic.mypy"]
 
 [[tool.mypy.overrides]]
-module = ["passlib.*", "jose.*"]
+module = [
+    "passlib.*",
+    "jose.*",
+    "tenacity.*",
+    "botocore.*",
+    "boto3.*",
+    "pydantic_settings.*",
+]
 ignore_missing_imports = true
 
 [tool.pydantic-mypy]

@@ -122,8 +122,8 @@ class SESService:
 
         If you didn't expect this invitation, you can safely ignore this email.
         """
-
-        return await self.send_email(to_email, subject, html_body, text_body)
+        success: bool = await self.send_email(to_email, subject, html_body, text_body)
+        return success
 
     async def send_password_reset_email(
         self,
@@ -178,8 +178,8 @@ class SESService:
 
         If you didn't request a password reset, you can safely ignore this email.
         """
-
-        return await self.send_email(to_email, subject, html_body, text_body)
+        success: bool = await self.send_email(to_email, subject, html_body, text_body)
+        return success
 
     async def send_welcome_email(
         self,
@@ -222,8 +222,8 @@ class SESService:
 
         You can now access all community features and connect with other members.
         """
-
-        return await self.send_email(to_email, subject, html_body, text_body)
+        success: bool = await self.send_email(to_email, subject, html_body, text_body)
+        return success
 
 
 ses_service = SESService()

@@ -31,4 +31,4 @@ jobs:
               run: poetry install --with dev
 
             - name: Lint with ruff
-              run: poetry run ruff check src alembic
+              run: poetry run ruff check src migrations
