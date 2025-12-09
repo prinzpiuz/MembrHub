@@ -3,7 +3,7 @@ from pydantic import EmailStr, Field
 from src.core.schemas import BaseSchema
 
 
-TOKEN_TYPE_BEARER = "bearer"  # noqa: S105
+TOKEN_TYPE_BEARER = "bearer"  # nosec # noqa: S105
 
 
 class RegisterRequest(BaseSchema):

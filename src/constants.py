@@ -1,6 +1,9 @@
 from enum import StrEnum
 
 
+PASSWORD_RESET = "password_reset"  # nosec # noqa: S105
+
+
 class Environment(StrEnum):
     LOCAL = "LOCAL"
     STAGING = "STAGING"
@@ -39,6 +42,6 @@ class MemberStatus(StrEnum):
 class TokenType(StrEnum):
     ACCESS = "access"
     REFRESH = "refresh"
-    PASSWORD_RESET = "password_reset"  # noqa: S105
+    PASSWORD_RESET = PASSWORD_RESET
     EMAIL_VERIFICATION = "email_verification"
     INVITATION = "invitation"
