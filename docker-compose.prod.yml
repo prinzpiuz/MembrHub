@@ -13,4 +13,3 @@ services:
       dockerfile: Dockerfile.prod
     command:
       - entrypoints/gunicorn.sh
-
