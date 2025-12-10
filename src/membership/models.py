@@ -79,7 +79,7 @@ class CommunityMember(Base, TimestampMixin):
         back_populates="memberships",
         lazy="selectin",
     )
-    inviter: Mapped[CommunityMember | None] = relationship(
+    inviter: Mapped["CommunityMember | None"] = relationship(
         "CommunityMember",
         remote_side="CommunityMember.id",
         lazy="selectin",

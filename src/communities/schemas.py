@@ -39,7 +39,7 @@ class CommunityCreate(BaseSchema):
         return v
 
     @model_validator(mode="after")
-    def generate_slug_if_missing(self) -> CommunityCreate:
+    def generate_slug_if_missing(self) -> "CommunityCreate":
         if self.slug is None:
             self.slug = re.sub(r"[^a-z0-9]+", "-", self.name.lower()).strip("-")
         return self

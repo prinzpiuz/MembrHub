@@ -3,12 +3,14 @@ name = "membrhub"
 version = "0.0.0"
 description = "Community management platform"
 readme = "README.md"
-authors = [{ name = "prinzpiuz" }]
+authors = [{ name = "prinzpiuz", "email" = "prinzpiuz@kodnkin.com" }]
 requires-python = ">=3.12"
+license = { text = "AGPL-3.0" }
 
 
 [tool.poetry]
 package-mode = false
+packages = [{ include = "src" }]
 
 [tool.poetry.dependencies]
 python = "^3.14"
