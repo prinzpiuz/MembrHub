@@ -1,15 +1,18 @@
 version: 2
 updates:
-  # Python dependencies (using pip)
   - package-ecosystem: "pip"
-    # Location of your manifest file (e.g., requirements.txt, pyproject.toml)
-    # The "/" indicates the root of the repository.
     directory: "/"
-    # Set the frequency for checking updates
     schedule:
       interval: "weekly"
-    # Optional: Group related dependency updates into a single PR
+    allow:
+      - dependency-type: "direct"
+    ignore:
+      - dependency-name: "python" # Avoid PRs trying to bump interpreter itself
+    versioning-strategy: increase
     groups:
-      python-packages:
+      poetry-deps:
         patterns:
           - "*"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
